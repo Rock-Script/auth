@@ -28,6 +28,15 @@ module.exports.loginUser = async (req, res, next) => {
     }
 }
 
+module.exports.loginUserWithRefreshToken = async (req, res, next) => {
+    const data = await AuthService.loginUserWithRefreshToken(req.body);
+    return {
+        status: 200,
+        data,
+        message: 'Successfully loggedin user'
+    }
+}
+
 module.exports.getUser = async (req, res, next) => {
     const data = await AuthService.getUser(req.params.user_id);
     return {

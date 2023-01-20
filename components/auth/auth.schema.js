@@ -23,6 +23,10 @@ module.exports.LOGIN_USER = {
     email: Joi.string().email().required()
 }
 
+module.exports.LOGIN_WITH_REFRESH_TOKEN = {
+    refresh_token: Joi.string().required()
+}
+
 module.exports.INSERT_USER = {
     ...this.REGISTER_USER,
     password: Joi.string().required(),

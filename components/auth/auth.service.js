@@ -1,5 +1,6 @@
 const AuthModel = require('./auth.model');
 const CryptoTool = require('../../template/tools/crypto.tool');
+const JwtTool = require('../../template/tools/jwt.tool');
 const HTTP_RESPONSES = require('../../template/contants/http-responses');
 
 module.exports.addUser = async(params) => {
@@ -28,10 +29,25 @@ module.exports.loginUser = async(params) => {
     }
     const login_flag = await CryptoTool.check(params.password, user.password);
     if (login_flag) {
-        delete user.password;
-        return user;
+        delete user.password;        
+        const access_token = JwtTool.sign(user, 60);
+        return {
+            ...user,
+            access_token,
+            refresh_token: JwtTool.sign(access_token, 60 * 24 * 7)
+        };
     } else {
         throw HTTP_RESPONSES.UNAUTHORIZED('Invalid email or password')
+    }
+}
+
+module.exports.loginUserWithRefreshToken = async(params) => {
+    try {
+        const access_token = JwtTool.decode(params.refresh_token);
+        const user = JwtTool.decode(access_token.data);
+        return user.data;
+    } catch (e) {
+        return HTTP_RESPONSES.UNAUTHORIZED("Invalid token");
     }
 }
 

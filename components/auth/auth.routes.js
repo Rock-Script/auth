@@ -29,6 +29,14 @@ const routes = [
         handler: AuthController.loginUser
     },
     {
+        path: `${path}/login/refresh_token`,
+        method: ROUTE_METHODS.POST,
+        validation: {
+            body: AuthSchema.LOGIN_WITH_REFRESH_TOKEN
+        },
+        handler: AuthController.loginUserWithRefreshToken
+    },
+    {
         path: `${path}/user/:user_id`,
         method: ROUTE_METHODS.GET,
         validation: {
