@@ -1,0 +1,25 @@
+{
+  "name": "auth",
+  "version": "1.0.0",
+  "description": "Authentication microservice",
+  "main": "app.js",
+  "scripts": {
+    "test": "mocha --timeout=100000 --exit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rock-Script/auth.git"
+  },
+  "keywords": [
+    "auth"
+  ],
+  "author": "Yogesh Murdeshwar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Rock-Script/auth/issues"
+  },
+  "homepage": "https://github.com/Rock-Script/auth#readme",
+  "dependencies": {
+    "template": "./template"
+  }
+}

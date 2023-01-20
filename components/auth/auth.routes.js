@@ -1,0 +1,41 @@
+const AuthController = require('./auth.controller');
+const AuthSchema = require('./auth.schema');
+const ROUTE_METHODS = require('../../template/contants/route-methods.const');
+
+const path = '/auth';
+const routes = [
+    {
+        path: `${path}/register`,
+        method: ROUTE_METHODS.POST,
+        validation: {
+            body: AuthSchema.REGISTER_USER
+        },
+        handler: AuthController.registerUser
+    },
+    {
+        path: `${path}/reset`,
+        method: ROUTE_METHODS.PATCH,
+        validation: {
+            body: AuthSchema.RESET_USER_PASSWORD
+        },
+        handler: AuthController.resetUserPassword
+    },
+    {
+        path: `${path}/login`,
+        method: ROUTE_METHODS.POST,
+        validation: {
+            body: AuthSchema.LOGIN_USER
+        },
+        handler: AuthController.loginUser
+    },
+    {
+        path: `${path}/user/:user_id`,
+        method: ROUTE_METHODS.GET,
+        validation: {
+            params: AuthSchema.GET_USER
+        },
+        handler: AuthController.getUser
+    }
+]
+
+module.exports = routes;
