@@ -15,3 +15,19 @@ module.exports.addRole = async (params) => {
     params = await verifyParams(params);
     return await RoleModel.insertRole(params);
 }
+
+module.exports.updateRole = async (role_id, params) => {
+    const update_role_response = await RoleModel.updateRole(role_id, params);
+    if (update_role_response) {
+        return this.getRole(role_id);
+    }
+    return null;
+}
+
+module.exports.getRoles = async (params) => {
+    return await RoleModel.filter(params);
+}
+
+module.exports.getRole = async (role_id) => {
+    return await RoleModel.get(role_id);
+}

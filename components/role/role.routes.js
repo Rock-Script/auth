@@ -13,20 +13,28 @@ const routes = [
     },
     {
         path: `${path}`,
+        method: ROUTE_METHODS.GET,
+        validation: {
+        },
+        handler: RoleController.getRoles
+    },
+    {
+        path: `${path}`,
         method: ROUTE_METHODS.POST,
         validation: {
             body: RoleSchema.ADD_ROLE_BODY
         },
         handler: RoleController.addRole
     },
-    // {
-    //     path: `${path}`,
-    //     method: ROUTE_METHODS.PATCH,
-    //     validation: {
-    //         body: AuthSchema.RESET_USER_PASSWORD
-    //     },
-    //     handler: RoleController.resetUserPassword
-    // },
+    {
+        path: `${path}/:role_id`,
+        method: ROUTE_METHODS.PATCH,
+        validation: {
+            body: RoleSchema.PATCH_ROLE_BODY,
+            params: RoleSchema.PATCH_ROLE_PARAMS
+        },
+        handler: RoleController.updateRole
+    },
     // {
     //     path: `${path}`,
     //     method: ROUTE_METHODS.GET,
