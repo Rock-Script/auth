@@ -45,9 +45,13 @@ module.exports.loginUserWithRefreshToken = async(params) => {
     try {
         const access_token = JwtTool.decode(params.refresh_token);
         const user = JwtTool.decode(access_token.data);
-        return user.data;
+        return {
+            ...user.data,
+            access_token: access_token.data,
+            refresh_token: params.refresh_token
+        };
     } catch (e) {
-        return HTTP_RESPONSES.UNAUTHORIZED("Invalid token");
+        throw HTTP_RESPONSES.UNAUTHORIZED("Invalid token");
     }
 }
 
