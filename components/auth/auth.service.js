@@ -1,5 +1,6 @@
 const AuthModel = require('./auth.model');
 const CryptoTool = require('../../template/tools/crypto.tool');
+const ReferenceTool = require('../../template/tools/reference-tool');
 const JwtTool = require('../../template/tools/jwt.tool');
 const HTTP_RESPONSES = require('../../template/contants/http-responses');
 
@@ -31,8 +32,10 @@ module.exports.loginUser = async(params) => {
     if (login_flag) {
         delete user.password;        
         const access_token = JwtTool.sign(user, 60);
+        const members = await ReferenceTool.getMembers({email: user.email});
         return {
             ...user,
+            members,
             access_token,
             refresh_token: JwtTool.sign(access_token, 60 * 24 * 7)
         };
@@ -45,8 +48,10 @@ module.exports.loginUserWithRefreshToken = async(params) => {
     try {
         const access_token = JwtTool.decode(params.refresh_token);
         const user = JwtTool.decode(access_token.data);
+        const members = await ReferenceTool.getMembers({email: user.email});
         return {
             ...user.data,
+            members,
             access_token: access_token.data,
             refresh_token: params.refresh_token
         };

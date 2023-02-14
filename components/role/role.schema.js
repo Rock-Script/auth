@@ -5,12 +5,12 @@ const ReferenceSchema = require('../../template/schemas/reference.schemas');
 module.exports.ADD_ROLE_BODY = {
     institute_id: ObjectId().required(),
     name: Joi.string().required().min(3).max(100),
-    previleges: Joi.array().items(ObjectId()).optional().default([])
+    privileges: Joi.array().items(ObjectId()).optional().default([])
 }
 
 module.exports.PATCH_ROLE_BODY = {
     name: Joi.string().optional().min(3).max(100),
-    previleges: Joi.array().items(ObjectId()).optional()
+    privileges: Joi.array().items(ObjectId()).optional()
 }
 
 module.exports.PATCH_ROLE_PARAMS = {
