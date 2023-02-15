@@ -14,7 +14,7 @@ module.exports.insertUser = async(payload) => {
     return data;
 }
 
-module.exports.updateUser = async(user_id, payload) => {
+module.exports.updateUserPassword = async(user_id, payload) => {
     payload._id = Mongo.id();
     payload.modified_at = new Date();
 
@@ -22,6 +22,16 @@ module.exports.updateUser = async(user_id, payload) => {
     const data = await Mongo.updateOne(COLLECTION_NAME, { _id: Mongo.id(user_id)}, { $set: payload});
     return data;
 }
+
+module.exports.updateUser = async(user_id, payload) => {
+    payload._id = Mongo.id();
+    payload.modified_at = new Date();
+
+    payload = Validation.validate(AuthSchema.UPDATE_USER, payload);
+    const data = await Mongo.updateOne(COLLECTION_NAME, { _id: Mongo.id(user_id)}, { $set: payload});
+    return data;
+}
+
 
 module.exports.getUser = async(_id) => {
     const data = await Mongo.findOne(COLLECTION_NAME, { _id: Mongo.id(_id)}, { password: 0 });

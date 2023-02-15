@@ -43,7 +43,15 @@ const routes = [
             params: AuthSchema.GET_USER
         },
         handler: AuthController.getUser
-    }
+    },
+    {
+        path: `${path}/verify_email`,
+        method: ROUTE_METHODS.POST,
+        validation: {
+            body: AuthSchema.VERIFY_EMAIL_BODY
+        },
+        handler: AuthController.verifyEmail
+    },
 ]
 
 module.exports = routes;

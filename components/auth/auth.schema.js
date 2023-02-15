@@ -40,3 +40,19 @@ module.exports.UPDATE_USER_PASSWORD = {
     password: Joi.string().required(),
     modified_at: Joi.date().required()
 }
+
+module.exports.UPDATE_USER = {
+    first_name: Joi.string().optional().min(3).max(100),
+    last_name: Joi.string().optional().min(3).max(100),
+    phone: phoneNumber().optional(),
+    email_verified: Joi.boolean().optional(),
+    email_verified_at: Joi.date().optional(),
+    phone_verified: Joi.boolean().optional(),
+    phone_verified_at: Joi.date().optional()
+}
+
+module.exports.VERIFY_EMAIL_BODY = {
+    _id: ObjectId().required(),
+    token: Joi.string().required(),
+    email: Joi.string().email().required()
+}

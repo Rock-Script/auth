@@ -45,3 +45,12 @@ module.exports.getUser = async (req, res, next) => {
         message: 'Successfully retrieved user'
     }
 }
+
+module.exports.verifyEmail = async (req, res, next) => {
+    const data = await AuthService.verifyEmail(req.body);
+    return {
+        status: 200,
+        data,
+        message: 'Successfully verified user email'
+    }
+}

@@ -3,11 +3,14 @@ const CryptoTool = require('../../template/tools/crypto.tool');
 const ReferenceTool = require('../../template/tools/reference-tool');
 const JwtTool = require('../../template/tools/jwt.tool');
 const HTTP_RESPONSES = require('../../template/contants/http-responses');
+const AuthNotification = require('./auth.notification');
 
 module.exports.addUser = async(params) => {
     params.password = await CryptoTool.encrypt(params.password);
     const insert_response = await AuthModel.insertUser(params);
-    return this.getUser(insert_response?.insertedId);
+    const user = await this.getUser(insert_response?.insertedId);
+    await generateTokenAndSendSignupEmail(user);
+    return user;
 }
 
 module.exports.resetPassword = async(params) => {
@@ -16,7 +19,7 @@ module.exports.resetPassword = async(params) => {
         throw HTTP_RESPONSES.NOT_FOUND('User', params.email);
     }
     params.password = await CryptoTool.encrypt(params.password);
-    const update_response = await AuthModel.updateUser(user._id, params);
+    const update_response = await AuthModel.updateUserPassword(user._id, params);
     if (update_response.modifiedCount === 0) {
         throw HTTP_RESPONSES.INTERNAL_SERVER_ERROR();
     }
@@ -65,4 +68,35 @@ module.exports.getUser = async(_id) => {
     const user = await AuthModel.getUser(_id);
     delete user.password;
     return user;
+}
+
+
+module.exports.verifyEmail = async(params) => {
+    let data; 
+    try  {
+        data = JwtTool.decode(params.token);
+        data = data.data
+    } catch (e) {
+        const user = await this.getUser(params._id);
+        await generateTokenAndSendSignupEmail(user);
+        throw HTTP_RESPONSES.BAD_REQUEST("Invalid token, please check you mailbox for new verification email");
+    }
+    
+    if (data.email !== params.email) throw HTTP_RESPONSES.UNAUTHORIZED("Incorrect token or email");
+    if (data._id) {
+        let user = await this.getUser(data._id);
+        if (!user) throw HTTP_RESPONSES.UNAUTHORIZED("User not found");
+        await AuthModel.updateUser(user._id, { email_verified: true, email_verified_at: new Date() });
+        user = await this.getUser(data._id);
+        return user;
+    }
+}
+
+
+const generateTokenAndSendSignupEmail = async(user) => {
+    const token = JwtTool.sign({
+        _id: user._id.toString(),
+        email: user.email
+    }, 60 * 24 * 7);
+    await AuthNotification.sendSignupEmail(user, token);
 }
