@@ -9,6 +9,15 @@ module.exports.registerUser = async (req, res, next) => {
     }
 }
 
+module.exports.resendVerificationEmail = async (req, res, next) => {
+    const data = await AuthService.resendVerificationEmail(req.body);
+    return {
+        status: 200,
+        data,
+        message: 'Successfully registered user'
+    }
+}
+
 module.exports.resetUserPassword = async (req, res, next) => {
     const data = await AuthService.resetPassword(req.body);
     return {

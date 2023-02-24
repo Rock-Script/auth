@@ -19,5 +19,5 @@ module.exports.sendSignupEmail = async(user, token) => {
             }
         ]
     }
-    APITool.post(ApplicationCache.microservices.notification_send, payload);
+    return await APITool.post(ApplicationCache.microservices.notification_send, payload);
 }

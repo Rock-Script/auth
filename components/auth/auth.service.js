@@ -13,6 +13,19 @@ module.exports.addUser = async(params) => {
     return user;
 }
 
+module.exports.resendVerificationEmail = async(params) => {
+    const user = await this.getUser(params._id);
+    if (!user) {
+        throw HTTP_RESPONSES.NOT_FOUND('User', params.email);
+    }
+    try {
+        const data = await generateTokenAndSendSignupEmail(user);
+        return (data.status === 200);
+    } catch (e) {
+        return false;
+    }
+}
+
 module.exports.resetPassword = async(params) => {
     const user = await AuthModel.filterUser({ email: params.email });
     if (!user) {
@@ -50,10 +63,11 @@ module.exports.loginUser = async(params) => {
 module.exports.loginUserWithRefreshToken = async(params) => {
     try {
         const access_token = JwtTool.decode(params.refresh_token);
-        const user = JwtTool.decode(access_token.data);
+        let user = JwtTool.decode(access_token.data);
         const members = await ReferenceTool.getMembers({email: user.email});
+        user = await this.getUser(user.data._id);
         return {
-            ...user.data,
+            ...user,
             members,
             access_token: access_token.data,
             refresh_token: params.refresh_token
@@ -98,5 +112,5 @@ const generateTokenAndSendSignupEmail = async(user) => {
         _id: user._id.toString(),
         email: user.email
     }, 60 * 24 * 7);
-    await AuthNotification.sendSignupEmail(user, token);
+    return await AuthNotification.sendSignupEmail(user, token);
 }

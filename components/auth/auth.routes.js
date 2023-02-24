@@ -52,6 +52,14 @@ const routes = [
         },
         handler: AuthController.verifyEmail
     },
+    {
+        path: `${path}/resend_verification_email`,
+        method: ROUTE_METHODS.POST,
+        validation: {
+            body: AuthSchema.RESEND_EMAIL_VERIFICATION
+        },
+        handler: AuthController.resendVerificationEmail
+    },
 ]
 
 module.exports = routes;

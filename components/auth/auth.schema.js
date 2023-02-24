@@ -33,7 +33,11 @@ module.exports.INSERT_USER = {
     _id: ObjectId(),
     created_at: Joi.date().required(),
     modified_at: Joi.date().required(),
-    is_active: Joi.boolean().default(true).optional()
+    is_active: Joi.boolean().default(true).optional(),
+    email_verified: Joi.boolean().default(false),
+    email_verified_at: Joi.date().default(null),
+    phone_verified: Joi.boolean().default(false),
+    phone_verified_at: Joi.date().default(null)
 }
 
 module.exports.UPDATE_USER_PASSWORD = {
@@ -54,5 +58,10 @@ module.exports.UPDATE_USER = {
 module.exports.VERIFY_EMAIL_BODY = {
     _id: ObjectId().required(),
     token: Joi.string().required(),
+    email: Joi.string().email().required()
+}
+
+module.exports.RESEND_EMAIL_VERIFICATION = {
+    _id: ObjectId().required(),
     email: Joi.string().email().required()
 }
